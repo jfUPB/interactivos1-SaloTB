@@ -1,37 +1,37 @@
 #### Codigo
-let x = 200
-let y = 300
-let x1 = 100
-let y1 = 300
-let z1 = 0
-let b = 0
+    let x = 200
+    let y = 300
+    let x1 = 100
+    let y1 = 300
+    let z1 = 0
+    let b = 0
 
-function setup() {
-  createCanvas(400, 400);
-}
-
-function draw() {
-  
-  x = random(0,400)
-  y = random(0, 400)
-  x1 = random (200, 400)
-  y1= random(100,300)
-  z1 = random (0, 400)
-  b = random (300,400)
-  
-  background(b);
-  fill('#F1EED4')
-  
-  fill('#673AB7')
-  circle(x, y, 100)
-  
-  fill('#BA9EEC')
-  circle(x1, y1, z1)
-  
-  fill('#03A9F4')
-  circle(x1, y1, z1)
-  
-}
+    function setup() {
+      createCanvas(400, 400);
+    }
+    
+    function draw() {
+      
+      x = random(0,400)
+      y = random(0, 400)
+      x1 = random (200, 400)
+      y1= random(100,300)
+      z1 = random (0, 400)
+      b = random (300,400)
+      
+      background(b);
+      fill('#F1EED4')
+      
+      fill('#673AB7')
+      circle(x, y, 100)
+      
+      fill('#BA9EEC')
+      circle(x1, y1, z1)
+      
+      fill('#03A9F4')
+      circle(x1, y1, z1)
+      
+    }
 
 #### Captura 
 ![image](https://github.com/user-attachments/assets/3bbd9891-cd1c-4126-9703-f854e41c634d)
