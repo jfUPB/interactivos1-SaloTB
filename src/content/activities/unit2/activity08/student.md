@@ -12,6 +12,7 @@
             self.pixelX = pixelX
             self.pixelY = pixelY
             self.pixelState = initState
+// Se incializa una clase que define un pixel individual en la matriz led, donde pixelx y pixely representan la direccion del pixel inistate el estado incial del pixel, e interval que simboliza el tiempo en milisegundos de cambio de estado del pixel
 
     def update(self):
 
@@ -31,10 +32,12 @@
 
     pixel1 = Pixel(0,0,0,1000)
     pixel2 = Pixel(4,4,0,500)
+// 
     
     while True:
         pixel1.update()
         pixel2.update()
+// Es un ciclo infinito, en el que se busca la direccion del pixel
 ## Estados
 
 ## Eventos
