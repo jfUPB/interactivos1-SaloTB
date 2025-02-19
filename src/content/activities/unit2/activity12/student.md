@@ -51,3 +51,5 @@
                     countdown_time = 20  # Restablece el tiempo inicial
                     audio.play(Sound.SOARING)
                       # Apaga el speaker
+## Enlace 
+https://www.canva.com/design/DAGfgOVfzok/vbEJtJHaQGYVUJS4Vqoa2A/watch?utm_content=DAGfgOVfzok&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf567455f36 
