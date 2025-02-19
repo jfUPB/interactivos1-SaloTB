@@ -1,0 +1,6 @@
+# Reflexión Final sobre el Aprendizaje
+Esta unidad fue realmente muy amplia y pude aprender acerca de muchas cosas, pro supuesto estaba centrada en maquinas de estados, peor para el aprendizaje de las mismas se necesitaban otros conocimeientos como los loops, el contador de tiermpo y definitivamente una
+gran flexibilidad a la hora de programar para poder decidir y entender donde incia y termina un estado y asi poder poner funciones coherentes dentro de los mismos, para mi fue sin duda un proceso complicado, no soy la mejor persona cuando se trata de programacion, 
+pero la logica tras unas cuantas clases y lñas ascesorias del profesor me ayudaron bastante a entender mas a fondo la logica de las maquinas de estado y su funcionamiento, aun me cuesta entender un poco el diseño y el uso del tiempo en las maquinas de estado, pero
+aparte de esto el proceso ha sido llevadero y los conocimientos adquiridos podrian servirme en un futuro proximo no unicamente para las siguientes unidades de la materia sino tambien para aplicarlo en proyectos personales, pues ahora tendre la capacidad de ver el
+codigo de otra manera y ademas de aplicar maquinas de estados de ahora en adelante como una forma plausible de realizar un codigo complejo de manera mas simple.
