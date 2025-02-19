@@ -6,7 +6,7 @@ de los botones orpimidos.
 
 ## Describe y aplica al menos 3 vectores de prueba para el programa.
 
-###Vector de Prueba 1: Transicion automatica de STATE_HAPPY a STATE_SMILE
+### Vector de Prueba 1: Transicion automatica de STATE_HAPPY a STATE_SMILE
 Condiciones Iniciales:
 El sistema inicia en STATE_HAPPY
 No se presiona ningun botón
@@ -20,7 +20,7 @@ Se reinicia el temporizador con SMILE_INTERVAL = 1000 ms
 Resultados obtenidos:
 Después de 1.5 segundos cambia a STATE_SMILE, el vector de prueba funciona
 
-###Vector de Prueba 2: Botón A en STATE_HAPPY cambia a STATE_SAD
+### Vector de Prueba 2: Botón A en STATE_HAPPY cambia a STATE_SAD
 Condiciones Iniciales:
 El sistema está en STATE_HAPPY
 Se espera que el usuario presione button_a
@@ -33,7 +33,7 @@ Se reinicia el temporizador con SAD_INTERVAL = 2000 ms.
 Resultados obtenidos:
 Al presionar el botón A la pantalla cambia a Image.SAD y el estado a STATE_SAD, el vector de prueba funciona
 
-###Vector de Prueba 3: Transición automatica de STATE_SAD a STATE_HAPPY
+### Vector de Prueba 3: Transición automatica de STATE_SAD a STATE_HAPPY
 Condiciones Iniciales:
 El sistema está en STATE_SAD
 No se presiona ningún botón
