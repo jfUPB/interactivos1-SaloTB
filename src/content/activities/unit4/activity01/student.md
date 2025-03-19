@@ -1,6 +1,6 @@
 # Algunos ejemplos inspiradores
 
-## Primer ejemplo Generative Design
+## Primer ejemplo Openprocessing
 https://openprocessing.org/sketch/2541284 
 
 Elegi este ejemplo en particular pues me llamo mucho la atencion que simulara el comportamiento de un caleidoscopio y ademas de eso es capaz de cambiar de color y movimeintos con la interaccion del usuario.
@@ -34,3 +34,23 @@ map() para determinar el angulo en el que giran las manesillas
 rotate() Para rotar las manesillas en el angulo determinaod previamente
 
 ## Cambios al codigo original
+https://editor.p5js.org/SaloTB/full/0wxbfB0Kj
+
+Puse un fondo que fuese cmabiando con respecto al horario, si es de manñana estara claro y si esta en la tarde se oscurecera. Ademas de esto añadi una froma de personalizar la hora moviendo la linea de la hora con un click.
+
+## Tercer ejemplo Generative Design
+http://www.generative-gestaltung.de/2/sketches/?01_P/P_2_3_7_01
+
+Elegi este ejemplo pues me intrigo como permite dibujar en el canvas, al igual que la funcion de multiplicar la linea utilizada en el mismo para crear formas como de un mandala
+
+## Funciones de P5.js usadas
+Background(() se crea un fundo, un canvas cuadrado para pintar en el 
+stroke() Se crea una linea y se le aplica un color 
+width, height() Se le da un grosor y tamañoi a la inea
+if() Para crear las condiciones para crear los mirror y para determinar el color variable con las letras especificas
+ellipse() se crea una elipse para representar el mause
+
+## Cambios al codigo original
+https://editor.p5js.org/SaloTB/full/gqoBrlLfM
+
+Cambie el color de forma que cada linea nueva inciada sea un color nuevo al azar, pues asi se ve mas creativo y no hay que elegir el color exacto, pero al mismo tiempo no se puede elegir ya que es un color al azar
