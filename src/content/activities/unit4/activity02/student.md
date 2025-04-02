@@ -1,63 +1,123 @@
-# Caso de estudio: exploración inicial
-
-## Ejemplo elegico
-http://www.generative-gestaltung.de/2/sketches/?01_P/P_2_1_2_03
 
 ## Explicación
 
-Al incio se declaran las variables globales 
 ### #1
+Tras declarar las variasbles locales se crea la funcion preload
 
-    var tileCount = 20; // Numero de diviciones de la cuadricula
-    var moduleColor; // Donde se almacena el color de los cuadros
-    var moduleAlpha = 180; // Opacidad de los cuadros
-    var maxDistance = 500; // Tiene en cuenta la distancia del mause con respecto a los cuadros (Distancia maxima)
+    function preload() {
+      lineModule[1] = loadImage('data/02.svg');
+      lineModule[2] = loadImage('data/03.svg');
+      lineModule[3] = loadImage('data/04.svg');
+      lineModule[4] = loadImage('data/05.svg');
+    }
+preload() carga las imagenes SVG antes de que comience el programa para usarlas como pinceles
 
 ### #2
 
-    function setup() { 
-      createCanvas(600, 600); // Se crea el lienzo de 600x600
-      noFill(); // Evita que los cuadros tengan relleno
-      strokeWeight(3); // Determina el grosor de los bordes del cuadro
-      moduleColor = color(0, 0, 0, moduleAlpha); // Define el color, en este caso negro con una transparencia de 180
+Se establecen las propiedades del pincel, el tamaño del lienzo y su color
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight); // Crea un lienzo del tamaño de la ventana
+      background(255); // Fondo blanco
+      noCursor(); // Oculta el cursor
+      strokeWeight(0.75); // Grosor de línea del pincel
+      c = color(181, 157, 0); // Color inicial del pincel
     }
+
+
 ### #3
 
-    function draw() {
-      clear(); // Borra el canvas en cada fotograma
-      stroke(moduleColor); // Aplica el color a los bordes
+El tamaño del lienzo se ajusta a la pantalla
 
-### #4
-Para la creacion de la rejilla se utiliza un doble ciclo For:
-
-    for (var gridY = 0; gridY < width; gridY += 25) { 
-      for (var gridX = 0; gridX < height; gridX += 25) {
-
-Donde Gridx y Gridy representan el tamaño de cada cuadrado. En este caso ademas se llena la pantalla con una dejilla de 25x25 
-
-### #5
-
-    var diameter = dist(mouseX, mouseY, gridX, gridY); // calcula la distancia entre elmause y el cuadro actual
-    diameter = diameter / maxDistance * 40; // vuelve el tamaño de los cuadrados a su estado original y delimita su rango con una regla de tres. [0, 40] Teniendo en cuenta que su maxima distancia es 500
-
-El dimetro cambia dependiendo de si el mause esta cerca o lejos del cuadrado, si esta cerca "diameter" es grande, mientras que si esta lejos es pequeño. 
-Calcula la distancia euclidiana entre dos puntos utilizando la funcion "dist"
-
-### #6
-
-    push(); //Guarda la transformacion actual
-    translate(gridX, gridY, diameter * 5); // mueve el sistema de cordenadas a las posiciones de gridx y gridy, *5 hace referencia a un movimeinto en Z
-    rect(0, 0, diameter, diameter); Dibuja un cuadrado con "diameter" como base
-    pop(); // Restaura la transformacion anteriormente guardada por push
-
-### #7
-
-    function keyReleased() {
-      if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
     }
 
-Finalmente se tiene esta funcion que permite guardar la iomagen actual del canvas al precionar "s"
+### #4
+    function draw() {
+      if (mouseIsPressed && mouseButton == LEFT) {
+        var x = mouseX;
+        var y = mouseY;
+        if (keyIsPressed && keyCode == SHIFT) {
+          if (abs(clickPosX - x) > abs(clickPosY - y)) {
+            y = clickPosY;
+          } else {
+            x = clickPosX;
+          }
+        }
+    
+        push();
+        translate(x, y);
+        rotate(radians(angle));
+    
+        if (lineModuleIndex != 0) {
+          tint(c); 
+          image(lineModule[lineModuleIndex], 0, 0, lineModuleSize, lineModuleSize);
+        } else {
+          stroke(c);
+          line(0, 0, lineModuleSize, lineModuleSize);
+        }
+    
+        angle += angleSpeed;
+        pop();
+      }
+    }
+
+Determina la posicion del mause en "y" y "x"
+Si se prime shift limita la direccion de las lineas a horizontales
+guarda el estado actual con push()
+Determina el angulo del pincel y lo aumenta 
+si existe un modulo SVG seleciconaod lo dibuja con "imagen" si no solo dibuja una linea
+Restaura el estado con pop()
+
+### #6
+    function mousePressed() {
+      lineModuleSize = random(50, 160); // Genera un tamaño aleatorio del pincel
+      clickPosX = mouseX; // Guarda la posición del clic en X
+      clickPosY = mouseY; // Guarda la posición del clic en Y
+    }
+Al hacer click el tamaño del mause cambia de forma aleatoria
+
+### #7
+Con las flechas se puede variar la velocidad de rotacion y el tamaño del pincel
+
+    function keyPressed() {
+      if (keyCode == UP_ARROW) lineModuleSize += 5;
+      if (keyCode == DOWN_ARROW) lineModuleSize -= 5;
+      if (keyCode == LEFT_ARROW) angleSpeed -= 0.5;
+      if (keyCode == RIGHT_ARROW) angleSpeed += 0.5;
+    }
+
+### #8
+    function keyReleased() {
+      if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
+      if (keyCode == DELETE || keyCode == BACKSPACE) background(255);
+    
+      if (key == 'd' || key == 'D') {
+        angle += 180;
+        angleSpeed *= -1;
+      }
+    
+      if (key == ' ') c = color(random(255), random(255), random(255), random(80, 100));
+    
+      if (key == '1') c = color(181, 157, 0);
+      if (key == '2') c = color(0, 130, 164);
+      if (key == '3') c = color(87, 35, 129);
+      if (key == '4') c = color(197, 0, 123);
+    
+      if (key == '5') lineModuleIndex = 0;
+      if (key == '6') lineModuleIndex = 1;
+      if (key == '7') lineModuleIndex = 2;
+      if (key == '8') lineModuleIndex = 3;
+      if (key == '9') lineModuleIndex = 4;
+    }
+Esta parte genera varios cambios a las lineas y sus angulos: si oprimes el espacio cambia el color de forma aleatoria, si oprimers d invierte la rotacion del angulo, si se oprime de 1 a 4 cambia el color (no aleatoriamente) y si se oprime de 5 a 9 cambia el tipo de píncel SGV. Finalmente si se oprime la "S" se guarda una imagen en PNG.
+
+## Imagenes
+Esta la cree cambiando tanto el pincel SVG (con los numeros 5 a 9) como el color (con los numero de 1 a 4) mientras oprimia constantemente el mause.
+![250402_82555_588](https://github.com/user-attachments/assets/09d065a8-75b8-42b7-b4b2-dec822fb8bba)
+
+Esta imagen la cree moviendo el mause por la pantalla mientras cambaiba de forma aleatoria y simultanea el SVG utilizado y el color del pincel, al igual que la rotacion del angulo oprimiendo "d"
+![250402_82753_172](https://github.com/user-attachments/assets/cdf7f6c1-dd9c-453d-bc29-1de7fc97bb65)
 
 
-En resumen este codigo genera una rejilla de cuadros con un diametro determinado que reacciona a la cercania del mause dada por las cordenadas del mismo sobre las cordenadas de cada cuadro. Esto permite que el diametro se altere en los cuadros mas cercanos a la pocision actual de mause y se recuperen volviendo a su tamaño original cuando este mismo de aleja. 
-  
