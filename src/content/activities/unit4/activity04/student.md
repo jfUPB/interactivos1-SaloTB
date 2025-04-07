@@ -1,6 +1,6 @@
 # Caso de estudio: p5.js
 
-## Analicis primeros codigos
+## Analicis 
     function preload() {
       lineModule[1] = loadImage("02.svg");
       lineModule[2] = loadImage("03.svg");
@@ -59,7 +59,6 @@ Inicializa las caracteristicas del canvas y tambien crea el boton para conecatr 
 Logica de coneccion con el micro:bit 
 
 
-## Analicis codigo final
 Determina si el micro bit esta conectado e incializa todo lo necesario para empezar a dibujar 
 
     if (microBitConnected === true) { //condicion del micro:bit 
@@ -69,5 +68,83 @@ Determina si el micro bit esta conectado e incializa todo lo necesario para empe
     strokeWeight(0.75);
     c = color(181, 157, 0);
     noCursor();
+Se declaran las variables globales tales como el color actual, el tamaño de la linea, la rotacion entre oitras
+
+    let c;
+    let lineModuleSize = 0;
+    let angle = 0;
+    let angleSpeed = 1;
+    const lineModule = [];
+    let lineModuleIndex = 0;
+    let clickPosX = 0;
+    let clickPosY = 0;
+
+Se declaran las variables del micro:bit como movimeinto y posicion ademas de su estado antes y despues de oprimir los botones A y B
+
+    let microBitX = 0;
+    let microBitY = 0;
+    let microBitAState = false;
+    let microBitBState = false;
+    let prevmicroBitAState = false;
+    let prevmicroBitBState = false;
+
+Detecta los eventos al presionar A y B ya sea para cambair el color o el pincel
+
+    function updateButtonStates(newAState, newBState) {
+      if (newAState === true && prevmicroBitAState === false) { 
+        lineModuleSize = random(50, 160); 
+        clickPosX = microBitX;
+        clickPosY = microBitY;
+        print("A pressed");
+      }
+      if (newBState === false && prevmicroBitBState === true) {
+        c = color(random(255), random(255), random(255), random(80, 100));
+        print("B released");
+      }
+    
+      prevmicroBitAState = newAState;
+      prevmicroBitBState = newBState;
+    }
+Lectura del puerto serial y si el mismo esta abierto espera 4 valores: A, B, X, Y
+
+    let values = data.split(",");
+    if (values.length == 4) {
+      microBitX = int(values[0]) + windowWidth / 2;
+      microBitY = int(values[1]) + windowHeight / 2;
+      ...
+    }
+En esta prate se gestionan los estados, esperando a que el micro:bit se conecte o dibujando dependienod del estado del boton A
+
+    switch (appState) {
+      case STATES.WAIT_MICROBIT_CONNECTION:
+        ...
+      case STATES.RUNNING:
+        ...
+    }
 
 
+## Preguntas
+
+### ¿Para qué se usan estas imágenes? ¿Qué representan?
+Las i9magenes utilizadas en el codigo se utilizan para poder cambiar los tipos de pincel, cada una de estas podria decrise es uno de los pinceles que podemos utilizar para dibujar en el canvas
+
+###  ¿Qué pasaría si el puerto está cerrado y el micro:bit envía datos?
+Si esta cerrado el micro:bit seguiria transmitiendo ya sea usando print() o serial.write() en MicroPython pero el navegador (p5.js) simplemente no los recibe y no habria errores ni excepciones en el sketch de p5.js. Anque al final el draw() nunca cambiaria al estado RUNNING.
+
+### data = "{},{},{},{}\n".format(xValue, yValue, aState, bState) ¿Qué pasaría si el micro:bit no envía el "\n"?
+
+
+### ¿Por qué se suma windowWidth/2 y windowHeight/2 a los valores de x e y?
+
+
+### ¿Cómo puedes verificar que los eventos de keypressed y keyreleased se están generando?
+Esto se podria verificar de varias maneras como escribir la accion realizada por el evento en la consola o determinar una reaccion en el micro:bit una accion en especifico que se lleve a cabo cada vez que se realice la accion (Esto puede ser un sonido o una pista visual) 
+
+###  Algoritmo updateButtonStates. ¿Qué hace? ¿Por qué es necesario almacenar el estado anterior de los botones? ¿Qué pasaría si no se almacenara el estado anterior?
+
+### ¿Qué pasó con algunos eventos del mouse? 
+
+### ¿Qué paso con la función relacionada con la barra de espacio del teclado?
+
+### No se están recibiendo 4 datos del micro:bit ¿Qué significa esto? ¿Qué puedes hacer para solucionar este problema?
+Este mensaje popdria estar relacionado a la parte del codigo que qu hace la lectura del puerto serial que espera resibir 4 daqtos: A,B,x,Y. Puyede que este porblema se este causando porque espera los datos de forma simultanea y estos no estan llegando como es debido. 
