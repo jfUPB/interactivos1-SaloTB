@@ -131,11 +131,11 @@ Las i9magenes utilizadas en el codigo se utilizan para poder cambiar los tipos d
 ###  ¿Qué pasaría si el puerto está cerrado y el micro:bit envía datos?
 Si esta cerrado el micro:bit seguiria transmitiendo ya sea usando print() o serial.write() en MicroPython pero el navegador (p5.js) simplemente no los recibe y no habria errores ni excepciones en el sketch de p5.js. Anque al final el draw() nunca cambiaria al estado RUNNING.
 
-### data = "{},{},{},{}\n".format(xValue, yValue, aState, bState) ¿Qué pasaría si el micro:bit no envía el "\n"?
-
+### Data = "{},{},{},{}\n".format(xValue, yValue, aState, bState) ¿Qué pasaría si el micro:bit no envía el "\n"?
+La /n lo que le dice al programa es que lea datos del puerto serial hasta que haya un salto de linea, por lo que si esto nunca llega entonces los valores del micro:bity y el micro:bitx no se actualizan, la interfaz se congelaria y updateButtonStates() no se llamraia. 
 
 ### ¿Por qué se suma windowWidth/2 y windowHeight/2 a los valores de x e y?
-
+Para trasladar el sistema de coordenadas del micro:bit al centro del canvas de p5.js, pues las cordenadas predeterminadas del micro:bit son [0,0] lo que en p5.js es la esquina superior izquierda del canvas. 
 
 ### ¿Cómo puedes verificar que los eventos de keypressed y keyreleased se están generando?
 Esto se podria verificar de varias maneras como escribir la accion realizada por el evento en la consola o determinar una reaccion en el micro:bit una accion en especifico que se lleve a cabo cada vez que se realice la accion (Esto puede ser un sonido o una pista visual) 
