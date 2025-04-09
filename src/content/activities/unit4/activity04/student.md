@@ -1,6 +1,6 @@
-# Caso de estudio: p5.js
+## Caso de estudio: p5.js
 
-## Analicis 
+### Analicis 
     function preload() {
       lineModule[1] = loadImage("02.svg");
       lineModule[2] = loadImage("03.svg");
@@ -123,28 +123,28 @@ En esta prate se gestionan los estados, esperando a que el micro:bit se conecte 
     }
 
 
-## Preguntas
+### Preguntas
 
-### ¿Para qué se usan estas imágenes? ¿Qué representan?
+#### ¿Para qué se usan estas imágenes? ¿Qué representan?
 Las i9magenes utilizadas en el codigo se utilizan para poder cambiar los tipos de pincel, cada una de estas podria decrise es uno de los pinceles que podemos utilizar para dibujar en el canvas
 
-###  ¿Qué pasaría si el puerto está cerrado y el micro:bit envía datos?
+####  ¿Qué pasaría si el puerto está cerrado y el micro:bit envía datos?
 Si esta cerrado el micro:bit seguiria transmitiendo ya sea usando print() o serial.write() en MicroPython pero el navegador (p5.js) simplemente no los recibe y no habria errores ni excepciones en el sketch de p5.js. Anque al final el draw() nunca cambiaria al estado RUNNING.
 
-### Data = "{},{},{},{}\n".format(xValue, yValue, aState, bState) ¿Qué pasaría si el micro:bit no envía el "\n"?
+#### Data = "{},{},{},{}\n".format(xValue, yValue, aState, bState) ¿Qué pasaría si el micro:bit no envía el "\n"?
 La /n lo que le dice al programa es que lea datos del puerto serial hasta que haya un salto de linea, por lo que si esto nunca llega entonces los valores del micro:bity y el micro:bitx no se actualizan, la interfaz se congelaria y updateButtonStates() no se llamraia. 
 
-### ¿Por qué se suma windowWidth/2 y windowHeight/2 a los valores de x e y?
+#### ¿Por qué se suma windowWidth/2 y windowHeight/2 a los valores de x e y?
 Para trasladar el sistema de coordenadas del micro:bit al centro del canvas de p5.js, pues las cordenadas predeterminadas del micro:bit son [0,0] lo que en p5.js es la esquina superior izquierda del canvas. 
 
-### ¿Cómo puedes verificar que los eventos de keypressed y keyreleased se están generando?
+#### ¿Cómo puedes verificar que los eventos de keypressed y keyreleased se están generando?
 Esto se podria verificar de varias maneras como escribir la accion realizada por el evento en la consola o determinar una reaccion en el micro:bit una accion en especifico que se lleve a cabo cada vez que se realice la accion (Esto puede ser un sonido o una pista visual) 
 
-###  Algoritmo updateButtonStates. ¿Qué hace? ¿Por qué es necesario almacenar el estado anterior de los botones? ¿Qué pasaría si no se almacenara el estado anterior?
+####  Algoritmo updateButtonStates. ¿Qué hace? ¿Por qué es necesario almacenar el estado anterior de los botones? ¿Qué pasaría si no se almacenara el estado anterior?
+Es una funcion que maneja las transiciones de estado, por esto es neceario detectar el estado anterior, para asi saber cuando se esta generando un cambio. No podria detectar cuando se deja presionar "B" y el boton "A" se ejecutaria de forma infinita.
 
-### ¿Qué pasó con algunos eventos del mouse? 
-
-### ¿Qué paso con la función relacionada con la barra de espacio del teclado?
+#### ¿Qué pasó con algunos eventos del mouse? 
+Los eventos del mause inicalmente usados en el codigo original son remplazados por acciones en el micro:bit. Sin emabrgo se podrian usar tanto los eventos del mause como los eventos del micro:bit 
 
 ### No se están recibiendo 4 datos del micro:bit ¿Qué significa esto? ¿Qué puedes hacer para solucionar este problema?
 Este mensaje popdria estar relacionado a la parte del codigo que qu hace la lectura del puerto serial que espera resibir 4 daqtos: A,B,x,Y. Puyede que este porblema se este causando porque espera los datos de forma simultanea y estos no estan llegando como es debido. 
