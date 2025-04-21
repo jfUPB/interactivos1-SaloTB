@@ -2,136 +2,200 @@
 
 ### Ejemplo elejido
 https://openprocessing.org/sketch/2541284 
+https://editor.p5js.org/SaloTB/full/TGu7hHqeh 
 
 ### Modificacion
-     let pal, palette, BG;
-    let S, H;
-    let port;
-    let connectBtn;
-    
-    let microBitX = 0;
-    let microBitY = 0;
-    let microBitAState = false;
-    let microBitBState = false;
-    let prevA = false;
-    let prevB = false;
-    
-    let appState = "WAIT_MICROBIT";
-    let palettes = [
-      ["#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51"],
-      ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"],
-      ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff"]
-    ];
-    
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-      frameRate(30);
-      S = min(windowWidth, windowHeight) / 7;
-      H = S / 2 * sqrt(3);
-    
-      palette = random(palettes);
-      BG = random(palette);
-      noFill();
-      strokeCap(PROJECT);
-    
-      port = createSerial();
-      connectBtn = createButton("Conectar micro:bit");
-      connectBtn.position(10, 10);
-      connectBtn.mousePressed(() => {
-        if (!port.opened()) {
-          port.open("MicroPython", 115200);
-        } else {
-          port.close();
-        }
-      });
+let port, reader;
+let microBitX = 0, microBitY = 0;
+let microBitA = false, microBitB = false;
+let S, H;
+let pal, BG;
+let speedFactor = 1;
+let lastButtonB = false;
+
+let connectBtn;
+let isMicrobitConnected = false;
+
+function setup() {
+  createCanvas(S = min(windowWidth, windowHeight), S);
+  frameRate(30);
+  randomSeed(~~random(hour() + minute() + second()));
+  noiseSeed(random(1234567));
+  S /= 7;
+  H = S / 2 * sqrt(3);
+  pal = random(palettes);
+  BG = random(pal);
+  noFill();
+  strokeCap(PROJECT);
+
+  connectBtn = createButton("Conectar micro:bit");
+  connectBtn.position(10, 10);
+  connectBtn.mousePressed(connectMicrobit);
+}
+
+async function connectMicrobit() {
+  try {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 115200 });
+    reader = port.readable
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+    isMicrobitConnected = true;
+    connectBtn.html("Desconectar");
+    readLoop();
+
+    console.log('Micro:bit conectado');
+  } catch (err) {
+    console.error('Error al conectar:', err);
+  }
+}
+
+async function readLoop() {
+  try {
+    while (port.readable) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (value) parseMicrobitData(value);
     }
-    
-    function draw() {
-      if (port.opened()) {
-        if (appState === "WAIT_MICROBIT") {
-          console.log("Micro:bit conectado");
-          appState = "RUNNING";
-        }
-    
-        if (port.availableBytes() > 0) {
-          let data = port.readUntil("\n");
-          if (data) {
-            let values = data.trim().split(",");
-            if (values.length === 4) {
-              microBitX = int(values[0]) + width / 2;
-              microBitY = int(values[1]) + height / 2;
-              microBitAState = values[2].toLowerCase() === "true";
-              microBitBState = values[3].toLowerCase() === "true";
-              handleButtons();
-            }
-          }
-        }
-      } else {
-        appState = "WAIT_MICROBIT";
-        return;
+  } catch (error) {
+    console.error('Error leyendo datos:', error);
+  } finally {
+    reader.releaseLock();
+    port.close();
+    isMicrobitConnected = false;
+    connectBtn.html("Conectar micro:bit");
+  }
+}
+
+function parseMicrobitData(raw) {
+  let lines = raw.trim().split("\n");
+  lines.forEach(line => {
+    let values = line.trim().split(",");
+    if (values.length === 4) {
+      microBitX = parseInt(values[0]);
+      microBitY = parseInt(values[1]);
+      microBitA = values[2] === "1";
+      microBitB = values[3] === "1";
+
+      speedFactor = map(abs(microBitX), 0, 2048, 0.2, 3);
+      speedFactor = constrain(speedFactor, 0.2, 3);
+
+      if (microBitA) {
+        pal = random(palettes);
+        BG = random(pal);
       }
-    
-      if (appState === "RUNNING" && microBitAState) {
-        let clr = palette[int(random(palette.length))];
-        stroke(clr);
-        drawKaleidoscope(microBitX, microBitY);
+
+      if (microBitB && !lastButtonB) {
+        isLooping() ? noLoop() : loop();
       }
+      lastButtonB = microBitB;
     }
-    
-    function handleButtons() {
-      // A PRESSED
-      if (microBitAState && !prevA) {
-        console.log("A presionado: dibujar activado");
-      }
-    
-      // B RELEASED
-      if (!microBitBState && prevB) {
-        console.log("B soltado: guardar imagen + nueva paleta");
-        saveCanvas("kaleido_" + Date.now(), "png");
-        palette = random(palettes);
-        BG = random(palette);
-      }
-    
-      prevA = microBitAState;
-      prevB = microBitBState;
+  });
+}
+
+function draw() {
+  let clr = color(BG);
+  let darkenBG = color(red(clr) / 6, green(clr) / 6, blue(clr) / 6);
+  background(darkenBG);
+  fill(BG);
+  noStroke();
+  rect(0, 0, width, height);
+
+  // Usar la posición X e Y del micro:bit para influir en la animación
+  let offsetX = map(microBitX, -1024, 1024, -width / 4, width / 4);
+  let offsetY = map(microBitY, -1024, 1024, -height / 4, height / 4);
+
+  const shapesImg = getKaleidoscopeImg(35, offsetX, offsetY);
+  const dx = 3 * S;
+  const dy = H;
+
+  for (let y = 0, j = 0; y < height; y += dy, j++) {
+    for (let x = 0; x < width; x += dx) {
+      drawKaleidoscope(shapesImg, x + (j % 2 === 0 ? 0 : dx / 2), y);
     }
-    
-    function drawKaleidoscope(px, py) {
-      let shapesImg = getKaleidoscopeImg(30);
-      const dx = 3 * S;
-      const dy = H;
-      let darkenBG = color(red(BG)/6, green(BG)/6, blue(BG)/6);
-      background(darkenBG);
-    
-      for (let y = 0, j = 0; y < height; y += dy, j++) {
-        for (let x = 0; x < width; x += dx) {
-          let offset = (j % 2 === 0 ? 0 : dx / 2);
-          drawTile(shapesImg, x + offset, y);
-        }
-      }
+  }
+
+  strokeWeight(H);
+  stroke(0, 56);
+
+  let l = { x: 2 * S, y: -4 * H };
+  for (let i = -6; i < 6; i++) {
+    let p = {
+      x: width / 2 + i * S + offsetX / 2,  // Mover las líneas con microBitX
+      y: height / 2 + offsetY / 2          // Mover las líneas con microBitY
+    };
+    for (let j = 0; j < abs(i); j++) {
+      line(p.x - l.x, p.y - l.y, p.x + l.x, p.y + l.y);
+      line(p.x - l.x, p.y + l.y, p.x + l.x, p.y - l.y);
     }
-    
-    function getKaleidoscopeImg(numLines) {
-      let pg = createGraphics(S, H);
-      pg.strokeWeight(S / 8);
-      for (let i = 0; i < numLines; i++) {
-        pg.stroke(palette[i % palette.length]);
-        let x1 = random(S);
-        let y1 = random(H);
-        let x2 = random(S);
-        let y2 = random(H);
-        pg.line(x1, y1, x2, y2);
-      }
-      return pg;
-    }
-    
-    function drawTile(img, px, py) {
-      for (let i = 0; i < 6; i++) {
-        push();
-        translate(px, py);
-        rotate(i * PI / 3);
-        if (i % 2 === 1) scale(-1, 1);
-        image(img, -S / 2, 0);
-        pop();
-      }
-    }
+  }
+}
+
+
+function getKaleidoscopeImg(numLines) {
+  push();
+  clip(() => {
+    triangle(width / 2 - S / 2, height / 2, width / 2, height / 2 - H, width / 2 + S / 2, height / 2);
+  });
+
+  strokeWeight(S / 7);
+  for (let i = 0; i < numLines; i++) {
+    const t = frameCount / (60 / speedFactor);
+    const n1 = noise(1234, i, t) * 2 - 0.5;
+    const n2 = noise(2234, i, t) * 2 - 0.5;
+    const n3 = noise(3234, i, t) * 2 - 0.5;
+    const n4 = noise(4234, i, t) * 2 - 0.5;
+    stroke(pal[i % pal.length]);
+    strokeWeight(10 - i);
+    line(width / 2 + (n1 - 0.5) * S, height / 2 - n2 * H, width / 2 + (n3 - 0.5) * S, height / 2 - n4 * H);
+
+    const n5 = noise(5234, i, t) * 2 - 0.5;
+    const n6 = noise(6234, i, t) * 2 - 0.5;
+    stroke(pal[pal.length - i % pal.length - 1]);
+    strokeWeight((6 - i / 2) * 1.5);
+    point(width / 2 + (n5 - 0.5) * S, height / 2 - n6 * H);
+  }
+
+  strokeWeight(1);
+  stroke(32, 128);
+  noFill();
+  triangle(width / 2 - S / 2, height / 2, width / 2, height / 2 - H, width / 2 + S / 2, height / 2);
+  pop();
+
+  return get(width / 2 - S / 2, height / 2 - H, S, S);
+}
+
+function drawKaleidoscope(shapesImg, px, py) {
+  for (let i = 0; i < 6; i++) {
+    push();
+    translate(px, py);
+    rotate(i * TAU / 6);
+    clip(() => {
+      triangle(0, 0, S / 2, H, -S / 2, H);
+    });
+    if (i % 2 === 1) scale(-1, 1);
+    image(shapesImg, -S / 2, 0);
+    pop();
+  }
+}
+
+	const palettes = [
+		["#8386f5", "#3d43b4", "#04134b", "#083e12", "#1afe49"],
+		["#f887ff", "#de004e", "#860029", "#321450", "#29132e"],
+		["#e96d5e", "#ff9760", "#ffe69d", "#6a7e6a", "#393f5f"],
+		["#ff124f", "#ff00a0", "#fe75fe", "#7a04eb", "#120458"],
+		["#ff6e27", "#fbf665", "#73fffe", "#6287f8", "#383e65"],
+		["#7700a6", "#fe00fe", "#defe47", "#00b3fe", "#0016ee"],
+		["#63345e", "#ac61b9", "#b7c1de", "#0b468c", "#092047"],
+		["#af43be", "#fd8090", "#c4ffff", "#08deea", "#1261d1"],
+		["#a0ffe3", "#65dc98", "#8d8980", "#575267", "#222035"],
+		["#ff2a6d", "#d1f7ff", "#f5d9e8", "#005678", "#01012b"],
+		["#490109", "#d40011", "#fd7495", "#5e4ef8", "#14029a"],
+		["#8f704b", "#daae6d", "#89e3f6", "#4d9e9b", "#44786a"],
+		["#fff69f", "#fdd870", "#d0902f", "#a15501", "#351409"],
+		["#b0acb0", "#e2dddf", "#85ebd9", "#3d898d", "#2f404d"],
+		["#ff184c", "#ff577d", "#ffccdc", "#0a9cf5", "#003062"]
+	]
+
+FALTA: funcionamiento correcto del movimiento del micro:bit y que detecte los botones
