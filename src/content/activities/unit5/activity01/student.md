@@ -64,5 +64,6 @@ Esto se genera al en el codigo comprobar el estado anterior, el cual puede ser "
 
 ![image](https://github.com/user-attachments/assets/1b5cb939-35fd-47c5-ad33-6e0816daa6c3)
 
-![image](https://github.com/user-attachments/assets/4e022eae-47db-4879-9d14-1b29687125ad)
+![image](https://github.com/user-attachments/assets/1471c3a4-8865-4174-af3f-d338005e330a)
+
 
