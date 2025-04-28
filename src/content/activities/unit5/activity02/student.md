@@ -23,4 +23,5 @@ En este caso se estan enviando 5 bytes por mensaje, muestran el valor de x y y, 
 ![image](https://github.com/user-attachments/assets/fbeb2c06-d1bd-4826-9687-ec6ca2266cb2)
 LAs diferencias principales entre ambos son la forma en la que los datos son escritos en pantalla, ademas los valores y "x" y "y" varias en ambos cuando son el mismo, por loq eu se han de interpretar de forma diferente.
 
-FALTA PROFUNDIZAR EN LAS ULTIMAS PREGUNTAS 
+### Diferencias Ventajas y desventajas de ASCII y binario
+Entre ambos se puede decir que la mayor diferencia es que al usar el binario se esta llevando a cabo el proceso de forma mas rapida y eficiente (Se envian menos datos), al mismo tiempo es una lectura directa de los bytes, en cambio el ASCII es mas lento, pero permite una lectura mas facil para el usuario y es mas flexible a cambiar el como deseas que se vea. 
