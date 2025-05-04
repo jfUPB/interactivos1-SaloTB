@@ -5,6 +5,8 @@ https://openprocessing.org/sketch/2541284
 https://editor.p5js.org/SaloTB/full/TGu7hHqeh 
 
 ### Modificacion
+https://editor.p5js.org/SaloTB/full/pgqGA_WhN 
+
 	let port, reader;
 	let microBitX = 0, microBitY = 0;
 	let microBitA = false, microBitB = false;
@@ -199,3 +201,25 @@ https://editor.p5js.org/SaloTB/full/TGu7hHqeh
 		["#b0acb0", "#e2dddf", "#85ebd9", "#3d898d", "#2f404d"],
 		["#ff184c", "#ff577d", "#ffccdc", "#0a9cf5", "#003062"]
 	]
+
+ ## Micro:bit Pgyton 
+
+	 from microbit import *
+	
+	uart.init(115200)
+	display.set_pixel(0, 0, 9)
+	
+	while True:
+	    xValue = accelerometer.get_x()
+	    yValue = accelerometer.get_y()
+	    aState = button_a.is_pressed()
+	    bState = button_b.is_pressed()
+	    data = "{},{},{},{}\n".format(xValue, yValue, int(aState), int(bState))
+	    uart.write(data)
+	    sleep(100)  # 10 Hz
+
+![image](https://github.com/user-attachments/assets/96f8a633-351c-43e5-8260-526df71c1808)
+
+![image](https://github.com/user-attachments/assets/f7beb825-24c9-4e49-85da-0ec59953575a)
+
+
