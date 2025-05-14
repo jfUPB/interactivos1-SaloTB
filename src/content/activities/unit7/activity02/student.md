@@ -16,4 +16,5 @@ Otros dos mencionados fueron touchstarted y touchended, para determinar cuando s
 las habilidades, uno siendo un constante movimeinto en contacto con al pantalla y el otro siendo un tap
 
 ### Compara brevemente Dev Tunnels con simplemente usar la IP local. ¿Cuáles son las ventajas y desventajas de cada uno?
-FALTA
+Dev Tunels tiene acceso remoto desde cualquier lugar, sin cambios en el router ademas es escalable. Mientras tanto  el IP local es mas limitado como su nombre lo dice a la red local 
+
