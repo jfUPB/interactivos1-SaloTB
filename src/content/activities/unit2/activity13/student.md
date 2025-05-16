@@ -1,0 +1,7 @@
+# Reflexión sobre el Diseño de la Bomba
+Al realizar la bomba con maquina de estados lo que mas se me complico fue la convercion de los milisegundos a la segundos y encontrar una forma de determinar el tiempo establecidoi y modificado en configuracion representado como los numeros en los bombillos
+led como el tiempo que debia de transcurrir en la cuenta regresiva, al final me di cuenta de que debia crear una variuable extra para almacenar el tiempo ya transcurrido y restarsela a la ya establecida cuenta regresiva. Sin emabrgo aun hay muchas funciones
+ya dentro de la parte de programacion de phyton con respecto al micro:bit que noconozco y el hehco de no hacerlo complica mis posibilidades para mover el codigo, para realizar la bomba tuve que tener una mente mas elastica a las posibilidades del codigo e investigar
+al respecto, en especial para la siguiente linea:  elapsed_time = (utime.ticks_diff(utime.ticks_ms(), start_time) // 1000) (Una de las que mas me costo). Tambnien ya mas por la parte del diseño decidi utilizar la funcionj "display.show" en vez de "display.scroll"
+ya que el tiempo que le tomaba a los numeros pasar por el scroll era aproximadamente 1.5 segundos lo que desbalanceaba la cuenta atras y no se veian todos los numeros en la pantalla de Leds, por esto decidi pasar los numeros individualmente. Para mejorar el diseño
+realmente no se me ocurre nada, tal vez encontrar una manera de pasar los numertos mas rapidamente para que asi la cuenta regresiva sea mas exacta y sean mas legibles para el usuario en la etapa de la configuracion.
